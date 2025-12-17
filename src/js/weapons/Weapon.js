@@ -8,6 +8,10 @@ export default class Weapon {
   }
 
   takeDamage(damage) {
+    if (!Number.isFinite(damage) || damage <= 0) {
+      return;
+    }
+
     if (!Number.isFinite(this.durability)) {
       return;
     }
@@ -20,15 +24,12 @@ export default class Weapon {
   }
 
   getDamage() {
-    if (this.durability === 0) {
+    if (this.durability <= 0) {
       return 0;
     }
 
-    if (this.durability >= this.initDurability * 0.3) {
-      return this.attack;
-    }
-
-    return this.attack / 2;
+    const threshold = this.initDurability * 0.3;
+    return this.durability >= threshold ? this.attack : this.attack / 2;
   }
 
   isBroken() {

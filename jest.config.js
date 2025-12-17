@@ -4,7 +4,10 @@ module.exports = {
     '^.+\\.js$': 'babel-jest'
   },
   collectCoverage: true,
-  collectCoverageFrom: ['src/js/weapons/**/*.js'],
+  collectCoverageFrom: [
+    'src/js/weapons/**/*.js',
+    'src/js/characters/**/*.js'
+  ],
   coverageThreshold: {
     global: {
       lines: 70

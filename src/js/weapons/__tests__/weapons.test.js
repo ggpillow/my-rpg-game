@@ -8,8 +8,8 @@ import LongBow from '../LongBow.js';
 import Axe from '../Axe.js';
 import StormStaff from '../StormStaff.js';
 
-describe('Weapon base class', () => {
-  test('constructor sets properties including initDurability', () => {
+describe('Базовый класс Weapon', () => {
+  test('Конструктор задаёт свойства и initDurability', () => {
     const w = new Weapon('Старый меч', 20, 10, 1);
 
     expect(w).toEqual({
@@ -21,7 +21,7 @@ describe('Weapon base class', () => {
     });
   });
 
-  test('takeDamage reduces durability and not below 0', () => {
+  test('takeDamage уменьшает прочность и не опускает ниже 0', () => {
     const w = new Weapon('X', 1, 10, 1);
 
     w.takeDamage(5);
@@ -31,22 +31,30 @@ describe('Weapon base class', () => {
     expect(w.durability).toBe(0);
   });
 
-  test('getDamage returns full damage if durability >= 30%', () => {
+  test('takeDamage игнорирует отрицательный урон', () => {
+    const w = new Weapon('X', 1, 10, 1);
+    w.takeDamage(-5);
+    expect(w.durability).toBe(10);
+    w.takeDamage(0);
+    expect(w.durability).toBe(10);
+  });
+
+  test('getDamage возвращает полный урон при прочности >= 30%', () => {
     const w = new Weapon('X', 10, 100, 1);
 
-    w.takeDamage(70); // durability = 30
+    w.takeDamage(70);
     expect(w.durability).toBe(30);
     expect(w.getDamage()).toBe(10);
   });
 
-  test('getDamage returns half damage if durability < 30% but > 0', () => {
+  test('getDamage возвращает половину урона при прочности < 30% но > 0', () => {
     const w = new Weapon('X', 10, 100, 1);
 
-    w.takeDamage(71); // durability = 29
+    w.takeDamage(71);
     expect(w.getDamage()).toBe(5);
   });
 
-  test('getDamage returns 0 when durability is 0', () => {
+  test('getDamage возвращает 0 при прочности 0', () => {
     const w = new Weapon('X', 10, 100, 1);
 
     w.takeDamage(200);
@@ -54,7 +62,7 @@ describe('Weapon base class', () => {
     expect(w.getDamage()).toBe(0);
   });
 
-  test('isBroken is true only when durability is 0', () => {
+  test('isBroken возвращает true только при прочности 0', () => {
     const w = new Weapon('X', 10, 1, 1);
 
     expect(w.isBroken()).toBe(false);
@@ -63,8 +71,8 @@ describe('Weapon base class', () => {
   });
 });
 
-describe('Weapons subclasses', () => {
-  test('Arm: Infinity durability and takeDamage does not change it', () => {
+describe('Классы-наследники оружия', () => {
+  test('Arm: не изнашивается поэтому прочность Infinity', () => {
     const arm = new Arm();
 
     expect(arm.name).toBe('Рука');
@@ -77,7 +85,7 @@ describe('Weapons subclasses', () => {
     expect(arm.durability).toBe(Infinity);
   });
 
-  test('Bow stats', () => {
+  test('характеристики Bow', () => {
     const bow = new Bow();
     expect(bow.name).toBe('Лук');
     expect(bow.attack).toBe(10);
@@ -86,7 +94,7 @@ describe('Weapons subclasses', () => {
     expect(bow.range).toBe(3);
   });
 
-  test('Sword stats', () => {
+  test('характеристики Sword', () => {
     const sword = new Sword();
     expect(sword.name).toBe('Меч');
     expect(sword.attack).toBe(25);
@@ -94,7 +102,7 @@ describe('Weapons subclasses', () => {
     expect(sword.range).toBe(1);
   });
 
-  test('Knife stats', () => {
+  test('характеристики Knife', () => {
     const knife = new Knife();
     expect(knife.name).toBe('Нож');
     expect(knife.attack).toBe(5);
@@ -102,7 +110,7 @@ describe('Weapons subclasses', () => {
     expect(knife.range).toBe(1);
   });
 
-  test('Staff stats', () => {
+  test('характеристики Staff', () => {
     const staff = new Staff();
     expect(staff.name).toBe('Посох');
     expect(staff.attack).toBe(8);
@@ -110,7 +118,7 @@ describe('Weapons subclasses', () => {
     expect(staff.range).toBe(2);
   });
 
-  test('LongBow overrides Bow (attack, range, name) but keeps durability', () => {
+  test('LongBow переопределяет атаку, дальность, имя, но сохраняет прочность', () => {
     const lb = new LongBow();
     expect(lb.name).toBe('Длинный лук');
     expect(lb.attack).toBe(15);
@@ -119,7 +127,7 @@ describe('Weapons subclasses', () => {
     expect(lb.initDurability).toBe(200);
   });
 
-  test('Axe overrides Sword (name, attack, durability=800)', () => {
+  test('Axe переопределяет атаку/имя и прочность (800)', () => {
     const axe = new Axe();
     expect(axe.name).toBe('Секира');
     expect(axe.attack).toBe(27);
@@ -128,7 +136,7 @@ describe('Weapons subclasses', () => {
     expect(axe.initDurability).toBe(800);
   });
 
-  test('StormStaff overrides Staff (name, attack, range) and keeps durability', () => {
+  test('StormStaff переопределяет имя/атаку/дальность, но сохраняет прочность', () => {
     const ss = new StormStaff();
     expect(ss.name).toBe('Посох Бури');
     expect(ss.attack).toBe(10);
